@@ -1,0 +1,120 @@
+#! /usr/bin/zsh
+# Zsh aliases: all the aliases because why not.
+
+# Strings #
+###########
+alias -g _p_awconf='~/.config/awesome/rc.lua'
+alias -g _p_awcore='/usr/share/awesome/'
+alias -g _p_zalias='~/.zshaliases'
+
+# Program Args #
+#################
+alias -g emax='emacs -nw'
+alias -g untar='tar -xvf'
+alias -g javjar='java -jar'
+alias -g luacheck='luac -p'
+
+alias pinstall='sudo pacman -S'
+alias pupgrade='sudo pacman -Syu' # Upgrade all packages
+alias psearch='pacman -Ss'
+alias uninstall='sudo pacman -R'
+alias psource='pacman -Qo'
+
+alias isnet='iw dev wlo1 link'
+alias ipconfig='ip addr'
+alias ddstat='sudo kill -USR1 $(pidof dd)'
+alias gsgparted='gksu gparted'
+alias rootterm='gksu gnome-terminal' # Warning: contains hardcoded gnome-terminal
+alias battery='cat /sys/class/power_supply/BAT0/uevent | grep POWER_SUPPLY_CAPACITY='
+alias swapswap='swapoff /dev/sda8 && swapon /dev/sda8' # Swap off + on
+
+alias screen-hdmi='xrandr --output HDMI1 --mode 1920x1080 --rate 60'
+alias screen-hdmi-off='xrandr --output HDMI1 --off'
+
+alias screen-desk='screen-hdmi --right-of LVDS1'
+
+# Nmaps #
+#########
+alias nmap-scan='nmap -sL'
+alias nmap-basic='nmap -sP'
+alias nmap-deep='sudo nmap -p 1-65535 -sV -sS -T4'
+alias nmap-extreme='sudo nmap -v-p 1-65535 -sV -O -sS -T4'
+alias nmap-fromfile='nmap -iL'
+
+
+# Complex scripts #
+###################
+alias search='firefox --search '
+
+# Edit files #
+##############
+alias editzsh='emax _p_zalias && rezsh'
+alias editrclua='emax _p_awconf; awesome -k'
+# TODO editlua function calls emax and luac -p
+
+# Hardware scripts #
+####################
+alias nap='systemctl suspend'
+alias catnap='sudo rtcwake -s 3 -m mem'
+alias killwpa='sudo killall wpa_supplicant'
+alias startwpa='sudo wpa_supplicant -c/etc/wpa_supplicant.conf -iwlo1 -Dnl80211 -B'
+alias setwifi='catnap; killwpa; startwpa; sudo dhcpcd; sudo wpa_gui;'
+
+# Coreutils Commands #
+######################
+alias resudo='sudo !!'
+alias rezsh='exec zsh'
+alias -g ls='ls --color=yes'
+alias -g grep='grep --color=auto'
+alias la='ls -lAh --color=yes'
+alias ll='ls -1 --color=yes'
+alias lf='ls -AF --color=yes'
+alias rm='rm -v'
+alias -g cp='cp -v'
+alias -g mv='mv -v'
+alias -g rsync='rsync -v'
+alias -g rmdir='rmdir -v'
+
+# Other things #
+################
+alias fuck='echo "Sorry about that."'
+alias hi='echo "hello!"'
+
+# Actual Code Stuff Kind Of #
+#############################
+man() {
+    env LESS_TERMCAP_mb=$'\E[01;31m' \
+	LESS_TERMCAP_md=$'\E[01;38;5;74m' \
+	LESS_TERMCAP_me=$'\E[0m' \
+	LESS_TERMCAP_se=$'\E[0m' \
+	LESS_TERMCAP_so=$'\E[38;5;246m' \
+	LESS_TERMCAP_ue=$'\E[0m' \
+	LESS_TERMCAP_us=$'\E[04;38;5;146m' \
+	man "$@"
+}
+diskid() {
+    ls -l /dev/disk/by-uuid | grep "$@"
+}
+
+cdUndoKey() {
+    popd      > /dev/null
+    zle       reset-prompt
+    echo
+    ls
+    echo
+
+}
+
+cdParentKey() {
+    pushd .. > /dev/null
+    zle      reset-prompt
+    echo
+    ls
+    echo
+
+}
+
+zle -N                 cdParentKey
+zle -N                 cdUndoKey
+bindkey '^[[1;3A'      cdParentKey
+bindkey '^[[1;3D'      cdUndoKey

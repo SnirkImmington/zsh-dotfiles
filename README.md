@@ -1,6 +1,8 @@
 # zsh-dotfiles
 My dotfiles and Zsh configuration (using oh-my-zsh)
 
+See also (upcoming) awesome and i3 dotfiles.
+
 Shinkansen Theme
 ----------------
 
